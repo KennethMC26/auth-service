@@ -1,0 +1,23 @@
+services:
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=auth_db
+    ports:
+      - "5432:5432"
+
+  auth-api:
+    build:
+      context: .
+      dockerfile: src/AuthService.Api/Dockerfile
+    container_name: auth-api
+    ports:
+      - "5003:8080" # Tu API será accesible en http://localhost:5003
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=auth-db;Port=5432;Database=auth_db;Username=postgres;Password=postgres
+    depends_on:
+      - auth-db

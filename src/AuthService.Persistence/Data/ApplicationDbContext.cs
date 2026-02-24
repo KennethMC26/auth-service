@@ -75,10 +75,15 @@ public class ApplicationDbContext : DbContext
         });
 
         modelBuilder.Entity<Role>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Name).IsUnique();
-        });
+{
+    entity.HasKey(e => e.Id);
+    entity.HasIndex(e => e.Name).IsUnique();
+    
+    // AÑADE ESTA LÍNEA PARA ARREGLAR EL ERROR 22001
+    entity.Property(e => e.Name)
+          .HasMaxLength(50)
+          .IsRequired();
+});
     }
 
     private static string ToSnakeCase(string input)

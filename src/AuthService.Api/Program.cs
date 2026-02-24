@@ -1,72 +1,78 @@
-using AuthService.Api.Extensions;
 using AuthService.Persistence.Data;
+using AuthService.Api.Extensions;
+using Microsoft.EntityFrameworkCore;
 
+// Configuración para manejar fechas en PostgreSQL
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configuración de servicios básicos
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//configuracion de servicios por medio de metodos de extension
-builder.Services.AddApplicationServices(builder.Configuration);
+// CORRECCIÓN: Usamos el nombre exacto de tu método en la extensión
+builder.Services.AddPersistenceServices(builder.Configuration);
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuración del pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Nota: Si tienes problemas de HTTPS en Docker, podrías comentar esta línea temporalmente
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.MapControllers();
 
+// Endpoint de prueba WeatherForecast
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             Random.Shared.Next(-20, 55),
             summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
+        )).ToArray();
     return forecast;
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-//inicializacion de la base de datos
+// INICIALIZACIÓN DE LA BASE DE DATOS
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
     try
     {
-        logger.LogInformation("Iniciando migracion de la base de datos...");
-        await context.Database.EnsureCreatedAsync();
-        logger.LogInformation("Migracion de la base de datos completada exitosamente.");
-        await DataSeeder.SeedAsync(context);
+        logger.LogInformation("Iniciando la migración de la base de datos...");
+        await context.Database.MigrateAsync();
+        logger.LogInformation("Migración completada exitosamente.");
+
+        // CORRECCIÓN: Nombre estándar del método en DataSeeder
+        await DataSeeder.SeedAsync(context); 
         logger.LogInformation("Datos iniciales cargados exitosamente.");
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Ocurrio un error al migrar la base de datos.");
-        throw; //detiene la aplicacion si falla la inicializacion de la base de datos
+        logger.LogError(ex, "Error al inicializar la base de datos.");
+        throw;
     }
 }
 
-app.Run();
+await app.RunAsync();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
