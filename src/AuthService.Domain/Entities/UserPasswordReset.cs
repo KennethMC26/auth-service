@@ -1,17 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-namespace AuthService.Domain.Entitis;
 
-public class UserPasswordReset{
+namespace AuthService.Domain.Entities;
+
+public class UserPasswordReset
+{
     [Key]
-    [MaxLength(36)]
+    [MaxLength(16)]
     public string Id { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(36)]
+    [MaxLength(16)]
     public string UserId { get; set; } = string.Empty;
 
-    [MaxLength(255)]
-    public string? PasswordResetToken { get; set; } = string.Empty;
+    [MaxLength(256)]
+    public string? PasswordResetToken { get; set; }
 
     public DateTime? PasswordResetTokenExpiry { get; set; }
 

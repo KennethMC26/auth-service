@@ -8,3 +8,4 @@ public class ForgotPasswordDto
     [EmailAddress(ErrorMessage = "El email debe ser válido")]
     public string Email { get; set; } = string.Empty;
 }
+ 
