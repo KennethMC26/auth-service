@@ -14,6 +14,7 @@ public class PasswordHashService : IPasswordHashService
     private const int Memory = 102400; // m=102400 KB = 100 MB (igual que Node.js)
     private const int Parallelism = 8; // p=8 (igual que Node.js)
     
+
     public string HashPassword(string password)
     {
         var salt = new byte[SaltSize];
@@ -153,3 +154,4 @@ public class PasswordHashService : IPasswordHashService
         return base64;
     }
 }
+

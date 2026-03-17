@@ -2,8 +2,8 @@ using AuthService.Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
-namespace AuthService.Application.Services;
 
+namespace AuthService.Application.Services;
 public class CloudinaryService(IConfiguration configuration) : ICloudinaryService
 {
 	    private readonly Cloudinary _cloudinary = new(new Account(
@@ -95,5 +95,4 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
             .Replace("-", "_")
             .ToLowerInvariant();
     }
-
 }

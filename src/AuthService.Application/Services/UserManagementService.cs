@@ -8,18 +8,17 @@ namespace AuthService.Application.Services;
 
 public class UserManagementService(IUserRepository users, IRoleRepository roles, ICloudinaryService cloudinary) : IUserManagementService
 {
-	public async Task<UserResponseDto> UpdateUserRoleAsync(string userId, string roleName)
+    public async Task<UserResponseDto> UpdateUserRoleAsync(string userId, string roleName)
     {
-        // Normalizar
+        // Normalize
         roleName = roleName?.Trim().ToUpperInvariant() ?? string.Empty;
 
-        // Validar entradas
+        // Validate inputs
         if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
-        
         if (!RoleConstants.AllowedRoles.Contains(roleName))
             throw new InvalidOperationException($"Role not allowed. Use {RoleConstants.ADMIN_ROLE} or {RoleConstants.USER_ROLE}");
 
-        // Cargar al usuario con roles
+        // Load user with roles
         var user = await users.GetByIdAsync(userId);
 
         // If demoting an admin, prevent removing last admin
@@ -52,7 +51,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Surname = user.Surname,
             Username = user.Username,
             Email = user.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
+            ProfilePicture = cloudinary.GetFullImageUrl(user.UserProfile?.ProfilePictureUrl ?? string.Empty),
             Phone = user.UserProfile?.Phone ?? string.Empty,
             Role = role.Name,
             Status = user.Status,
@@ -79,7 +78,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Surname = u.Surname,
             Username = u.Username,
             Email = u.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePicture ?? string.Empty),
+            ProfilePicture = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePictureUrl ?? string.Empty),
             Phone = u.UserProfile?.Phone ?? string.Empty,
             Role = roleName,
             Status = u.Status,
@@ -89,3 +88,4 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
         }).ToList();
     }
 }
+

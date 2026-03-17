@@ -15,16 +15,16 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         var verificationUrl = $"{configuration["AppSettings:FrontendUrl"]}/verify-email?token={token}";
 
         var body = $@"
-            <h2>Welcome {username}!</h2>
-            <p>Please verify your email address by clicking the link below:</p>
-            <a href='{verificationUrl}' style='background-color: #007bff; color: white; padding: 10px; text-decoration: none; border-radius: 5px;'>
-                Verify Email
-            </a>
-            <p>If you cannot click the link, copy and paste this URL into your browser:</p>
-            <p>{verificationUrl}</p>
-            <p>This link will expire in 24 hours.</p>
-            <p>If you didn't create an account, please ignore this email.</p>
-        ";
+        <h2>Welcome {username}!</h2>
+        <p>Please verify your email address by clicking the link below:</p>
+        <a href='{verificationUrl}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
+            Verify Email
+        </a>
+        <p>If you cannot click the link, copy and paste this URL into your browser:</p>
+        <p>{verificationUrl}</p>
+        <p>This link will expire in 24 hours.</p>
+        <p>If you didn't create an account, please ignore this email.</p>
+    ";
 
         await SendEmailAsync(email, subject, body);
     }
@@ -35,43 +35,37 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         var resetUrl = $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={token}";
 
         var body = $@"
-            <h2>Password Reset Request</h2>
-            <p>Hello {username},</p>
-            <p>You requested to reset your password. Click the link below to reset it:</p>
-            <a href='{resetUrl}' style='background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
-                Reset Password
-            </a>
-            <p>If you cannot click the link, copy and paste this URL into your browser:</p>
-            <p>{resetUrl}</p>
-            <p>This link will expire in 1 hour.</p>
-            <p>If you didn't request this, please ignore this email and your password will remain unchanged.</p>
-        ";
+        <h2>Password Reset Request</h2>
+        <p>Hello {username},</p>
+        <p>You requested to reset your password. Click the link below to reset it:</p>
+        <a href='{resetUrl}' style='background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
+            Reset Password
+        </a>
+        <p>If you cannot click the link, copy and paste this URL into your browser:</p>
+        <p>{resetUrl}</p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't request this, please ignore this email and your password will remain unchanged.</p>
+    ";
 
         await SendEmailAsync(email, subject, body);
     }
 
-  public async Task SendWelcomeEmailAsync(string email, string username)
+    public async Task SendWelcomeEmailAsync(string email, string username)
     {
         var subject = "Welcome to AuthDotnet!";
- 
+
         var body = $@"
-<h2>Welcome to AuthDotnet, {username}!</h2>
-<p>Your account has been successfully verified and activated.</p>
-<p>You can now enjoy all the features of our platform.</p>
-<p>If you have any questions, feel free to contact our support team.</p>
-<p>Thank you for joining us!</p>
+            <h2>Welcome to AuthDotnet, {username}!</h2>
+            <p>Your account has been successfully verified and activated.</p>
+            <p>You can now enjoy all the features of our platform.</p>
+            <p>If you have any questions, feel free to contact our support team.</p>
+            <p>Thank you for joining us!</p>
         ";
- 
+
         await SendEmailAsync(email, subject, body);
     }
 
-
-
-
-
-
-
-private async Task SendEmailAsync(string to, string subject, string body)
+    private async Task SendEmailAsync(string to, string subject, string body)
     {
         var smtpSettings = configuration.GetSection("SmtpSettings");
  
@@ -176,5 +170,4 @@ private async Task SendEmailAsync(string to, string subject, string body)
             throw new InvalidOperationException($"Failed to send email: {ex.Message}", ex);
         }
     }
-
 }

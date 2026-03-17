@@ -8,10 +8,4 @@ public class BusinessException : Exception
     {
         ErrorCode = errorCode;
     }
-
-    public BusinessException(string errorCode, string message, Exception innerException)
-        : base(message, innerException)
-    {
-        ErrorCode = errorCode;
-    }
 }

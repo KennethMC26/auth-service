@@ -4,5 +4,5 @@ namespace AuthService.Application.Interfaces;
 
 public interface IJwtTokenService
 {
-    string GenerateToken(UserProfile user);
+    string GenerateToken(User user);
 }

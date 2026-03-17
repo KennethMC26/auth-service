@@ -40,4 +40,5 @@ public static partial class LoggerExtensions
         Level = LogLevel.Error,
         Message = "Error uploading profile image")]
     public static partial void LogImageUploadError(this ILogger logger);
+    
 }

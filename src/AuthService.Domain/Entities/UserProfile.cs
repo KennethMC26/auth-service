@@ -1,3 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AuthService.Domain.Entities;
+
 public class UserProfile
 {
     [Key]
@@ -9,16 +14,12 @@ public class UserProfile
     [ForeignKey(nameof(User))]
     public string UserId { get; set; } = string.Empty;
 
-    // CAMBIO 1: Renombrar de ProfilePictureUrl a ProfilePicture
-    public string? ProfilePicture { get; set; } 
-
-    // CAMBIO 2: Agregar la propiedad Phone que falta
-    public string? Phone { get; set; }
-
+    public string? ProfilePictureUrl { get; set; }
     public string? Bio { get; set; }
 
-    public DateTime? DateOfBirth { get; set; }
+    public string? Phone { get; set; }
 
-    // Relación
+    public DateTime DateOfBirth { get; set; }
+
     public User User { get; set; } = null!;
 }
