@@ -56,7 +56,7 @@ public static async Task SeedAsync(ApplicationDbContext context)
                     {
                         Id = profileId,
                         UserId = userId,
-                        ProfilePicture = string.Empty,
+                        ProfilePictureUrl = string.Empty,
                         Phone = string.Empty
                     },
                     UserEmail = new UserEmail
